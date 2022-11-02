@@ -13,4 +13,10 @@ public class CameraFollow : MonoBehaviour
     {
         transform.position = Vector3.Lerp(transform.position, player.position + offset, followSpeed);
     }
+
+    
+    void OnGUI()
+    {
+        GUI.Label(new Rect(player.transform.position.x, player.transform.position.y - 1, 10, 20), player.GetComponent<PlayerController>().fear.ToString());
+    }
 }

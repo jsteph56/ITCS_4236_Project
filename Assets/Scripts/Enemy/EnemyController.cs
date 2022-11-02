@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] Transform trans;
-    [SerializeField] Rigidbody2D rb;
     [SerializeField] float moveSpeed;
     [SerializeField] float fadeSpeed;
 
@@ -33,8 +33,11 @@ public class EnemyController : MonoBehaviour
         
         if (!visibleByPlayer && !fadeOut && !fadeIn)
         {
-            //Vector2 directionToTarget = (playerPosition - trans.position).normalized;
-            trans.position = Vector2.MoveTowards(trans.position, player.transform.position, moveSpeed * Time.deltaTime);
+            GetComponent<AIPath>().canMove = true;
+        }
+        else
+        {
+            GetComponent<AIPath>().canMove = false;
         }
     }
 
@@ -60,7 +63,7 @@ public class EnemyController : MonoBehaviour
         
             if (objectColor.a <= 0)
             {
-                rb.MovePosition(startingPosition);
+                transform.position = startingPosition;
                 fadeOut = false;
                 FadeInObject();
             }

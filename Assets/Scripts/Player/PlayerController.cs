@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     {
         code = new int[2, 4] {{5, 7, 4, 1}, {0, 0, 0, 0}};
         fear = 0f;
+    
+        Cursor.visible = false;
     }
 
     void Update()
