@@ -20,6 +20,7 @@ public class EndDoorController : MonoBehaviour
         if (player.GetComponent<PlayerController>().CheckCode())
         {
             Debug.Log("Close Application");
+            Time.timeScale = 0;
             Application.Quit();
         }
     }

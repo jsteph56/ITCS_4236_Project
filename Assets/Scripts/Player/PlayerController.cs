@@ -17,6 +17,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (fear >= 100)
+        {
+            Debug.Log("Game Over!");
+            Application.Quit();
+        }
 
     }
 
