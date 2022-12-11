@@ -1,38 +1,119 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
+using UnityEngine.SceneManagement;
+using Pathfinding;
+
 
 public class PlayerController : MonoBehaviour
 {
-    public int[,] code;
-    public float fear;
+    [SerializeField] Sprite stoneSprite;
+    [SerializeField] FOV fieldOfView;
+
+    private GameObject[] enemies;
+    private float fadeSpeed;
+    private bool fadeIn, fadeOut, isStone;
+
+    public float stoneTouched;
+    public bool hasKey;
 
     void Start()
     {
-        code = new int[2, 4] {{5, 7, 4, 1}, {0, 0, 0, 0}};
-        fear = 0f;
-    
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        fadeSpeed = .3f;
+        fadeIn = false;
+        fadeOut = false;
+        isStone = false;
+
+        hasKey = false;
+        stoneTouched = 0f;
+
         Cursor.visible = false;
     }
 
     void Update()
     {
-        if (fear >= 100)
+        fieldOfView.SetAimDirection(GetMousePosition());
+        fieldOfView.SetOrigin(transform.position);
+
+        if (stoneTouched >= 100)
         {
-            Debug.Log("Game Over!");
-            Time.timeScale = 0;
-            Application.Quit();
+            foreach (GameObject enemy in enemies)
+            {
+                enemy.GetComponent<AIPath>().enabled = false;
+            }
+
+            if (!isStone)
+            {
+                FadeOutObject();
+                isStone = true;
+            }
         }
 
+        Fade();
+        if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
     }
 
-    public bool CheckCode()
+    public void Fade()
     {
-        for (int i = 0; i < code.GetLength(1); i++)
+        if (fadeOut)
         {
-            if (code[1, i] == 0) return false;
+            Debug.Log("Entered fadeOut");
+            GetComponent<PlayerMovement>().enabled = false;
+            GetComponent<Animator>().enabled = false;
+            GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+
+            Color objectColor = this.GetComponent<SpriteRenderer>().material.color;
+            float fadeAmount = objectColor.a - (fadeSpeed * Time.deltaTime);
+            objectColor = new Color(objectColor.r, objectColor.g, objectColor.b, fadeAmount);
+            this.GetComponent<SpriteRenderer>().material.color = objectColor;
+
+            if (objectColor.a <= 0)
+            {
+                GetComponent<SpriteRenderer>().sprite = stoneSprite;
+
+                fadeOut = false;
+                FadeInObject();
+            }
         }
 
-        return true;
+        if (fadeIn)
+        {
+            Debug.Log("Entered fadeIn");
+            Color objectColor = this.GetComponent<SpriteRenderer>().material.color;
+            float fadeAmount = objectColor.a + (fadeSpeed * Time.deltaTime);
+
+            objectColor = new Color(objectColor.r, objectColor.g, objectColor.b, fadeAmount);
+            this.GetComponent<SpriteRenderer>().material.color = objectColor;
+
+            if (objectColor.a >= 1)
+            {
+                fadeIn = false;
+                StartCoroutine(EndGame());
+            }
+        }
+    }
+
+    public void FadeOutObject()
+    {
+        fadeOut = true;
+    }
+
+    public void FadeInObject()
+    {
+        fadeIn = true;
+    }
+
+    IEnumerator EndGame()
+    {
+        SceneManager.LoadScene("Lose Scene");
+        yield return null;
+    }
+
+    private Vector3 GetMousePosition()
+    {
+        Vector3 mouseDirection = Input.mousePosition;
+        mouseDirection.z = 0f;
+        mouseDirection = Camera.main.ScreenToWorldPoint(mouseDirection);
+        return mouseDirection -= transform.position;
     }
 }

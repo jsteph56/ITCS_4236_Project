@@ -9,7 +9,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Mask
   - Water
   - UI
   - 
@@ -18,7 +18,7 @@ TagManager:
   - 
   - Enemies
   - Obstruction
-  - 
+  - Black
   - 
   - 
   - 
@@ -41,4 +41,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: ground
+    uniqueID: 596742455
+    locked: 0
+  - name: player
+    uniqueID: 826616787
     locked: 0

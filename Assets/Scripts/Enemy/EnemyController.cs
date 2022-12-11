@@ -43,18 +43,18 @@ public class EnemyController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Enemy collision");
         if (collision.gameObject == player)
         {
-            player.GetComponent<PlayerController>().fear += 25;
+            player.GetComponent<PlayerController>().stoneTouched += 25;
             FadeOutObject();
         }
     }
-
+    
     public void Fade()
     {
         if (fadeOut)
         {
+            GetComponent<Collider2D>().enabled = false;
             Color objectColor = this.GetComponent<SpriteRenderer>().material.color;
             float fadeAmount = objectColor.a - (fadeSpeed * Time.deltaTime);
 
@@ -79,6 +79,7 @@ public class EnemyController : MonoBehaviour
 
             if (objectColor.a >= 1)
             {
+                GetComponent<Collider2D>().enabled = true;
                 fadeIn = false;
             }
         }

@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         KeyInput();
-        RotateToMouse();
+        //RotateToMouse();
     }
 
     private void FixedUpdate()
@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
         movement = new Vector2(moveX, moveY).normalized;
     }
 
-    private void RotateToMouse()
+    public Vector3 RotateToMouse()
     {
         Vector3 mousePos = Input.mousePosition;
         Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
@@ -41,5 +41,6 @@ public class PlayerMovement : MonoBehaviour
 
         float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + rotationOffset));
+        return new Vector3(0, 0, angle + rotationOffset);
     }
 }
